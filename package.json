@@ -1,0 +1,10 @@
+{
+  "name": "sk-scents",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "cd backend && npm run dev",
+    "build": "cd frontend && npm install && npm run build",
+    "start": "cd backend && node server.js"
+  }
+}
