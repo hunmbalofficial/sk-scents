@@ -40,12 +40,17 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'SK SCENTS API running' });
 });
 
-const PORT = process.env.PORT || 5000;
+const isVercel = process.env.VERCEL === '1';
 
-connectDB().then(() => {
-  seedAdmin();
-  seedTestimonials();
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+if (!isVercel) {
+  const PORT = process.env.PORT || 5000;
+  connectDB().then(() => {
+    seedAdmin();
+    seedTestimonials();
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
   });
-});
+}
+
+module.exports = app;
