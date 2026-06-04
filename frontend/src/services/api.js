@@ -20,6 +20,22 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error?.response?.status === 401) {
+      const adminInfo = localStorage.getItem('adminInfo');
+      if (adminInfo && !error.config?.url?.includes('/auth/admin-login')) {
+        localStorage.removeItem('adminInfo');
+        if (window.location.pathname.startsWith('/admin') && !window.location.pathname.includes('/login')) {
+          window.location.href = '/admin/login';
+        }
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 export const productService = {
   getAll: (params) => api.get('/products', { params }),
   getById: (id) => api.get(`/products/${id}`),
