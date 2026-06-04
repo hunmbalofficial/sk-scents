@@ -48,8 +48,7 @@ const AdminProducts = () => {
     setShowForm(true);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     const formData = new FormData();
     formData.append('name', form.name);
     formData.append('price', form.price);
@@ -115,7 +114,7 @@ const AdminProducts = () => {
               <h2 className="font-display text-lg text-white">{editing ? 'Edit Product' : 'Add Product'}</h2>
               <button onClick={resetForm} className="text-luxury-gray hover:text-white"><X className="w-5 h-5" /></button>
             </div>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="col-span-1 sm:col-span-2"><label className="block text-sm text-luxury-gray mb-1">Name</label><input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="input-luxury w-full rounded-lg px-4 py-2.5 text-sm" required /></div>
                 <div><label className="block text-sm text-luxury-gray mb-1">Price</label><input type="number" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} className="input-luxury w-full rounded-lg px-4 py-2.5 text-sm" required /></div>
@@ -144,10 +143,10 @@ const AdminProducts = () => {
                 <div className="col-span-1 sm:col-span-2"><label className="block text-sm text-luxury-gray mb-1">Or paste image URLs (comma separated)</label><input value={form.imageUrls} onChange={(e) => setForm({ ...form, imageUrls: e.target.value })} className="input-luxury w-full rounded-lg px-4 py-2.5 text-sm" placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg" /></div>
               </div>
               <div className="flex gap-3 pt-2">
-                <button type="submit" className="btn-primary flex-1 py-2.5 rounded-lg text-sm">{editing ? 'Update' : 'Create'} Product</button>
+                <button type="button" onClick={handleSubmit} className="btn-primary flex-1 py-2.5 rounded-lg text-sm">{editing ? 'Update' : 'Create'} Product</button>
                 <button type="button" onClick={resetForm} className="btn-outline px-6 py-2.5 rounded-lg text-sm">Cancel</button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       )}

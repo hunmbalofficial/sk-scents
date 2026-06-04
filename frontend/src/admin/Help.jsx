@@ -100,7 +100,7 @@ const FaqManager = () => {
               <h2 className="font-display text-lg text-white">{editing ? 'Edit FAQ' : 'New FAQ'}</h2>
               <button onClick={resetForm} className="text-luxury-gray hover:text-white"><X className="w-5 h-5" /></button>
             </div>
-            <form onSubmit={handleSubmit} className="p-6 space-y-4">
+            <div className="p-6 space-y-4">
               <div>
                 <label className="block text-xs text-luxury-gray uppercase tracking-wider mb-1.5">Question</label>
                 <input value={form.question} onChange={(e) => setForm({ ...form, question: e.target.value })} className="w-full bg-luxury-black border border-luxury-gold/10 rounded-lg px-4 py-2.5 text-sm text-white" required />
@@ -118,10 +118,10 @@ const FaqManager = () => {
                 <span className="text-sm text-white/80">Active</span>
               </label>
               <div className="flex gap-3 pt-2">
-                <button type="submit" className="flex-1 btn-primary py-2.5 rounded-lg text-xs tracking-wider uppercase">{editing ? 'Update' : 'Create'}</button>
+                <button type="button" onClick={handleSubmit} className="flex-1 btn-primary py-2.5 rounded-lg text-xs tracking-wider uppercase">{editing ? 'Update' : 'Create'}</button>
                 <button type="button" onClick={resetForm} className="flex-1 border border-white/10 text-luxury-gray hover:text-white py-2.5 rounded-lg text-xs tracking-wider uppercase transition-all">Cancel</button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       )}
