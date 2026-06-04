@@ -1,8 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const path = require('path');
-
 dotenv.config();
 
 const connectDB = require('./config/db');
@@ -24,8 +22,6 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 app.use('/api/auth', authRoutes);
 app.use('/api/settings', settingRoutes);
 app.use(maintenanceMode);

@@ -1,6 +1,5 @@
 const Product = require('../models/Product');
-const fs = require('fs');
-const path = require('path');
+const { uploadToCloudinary } = require('../config/cloudinary');
 
 const getProducts = async (req, res) => {
   try {
@@ -48,7 +47,8 @@ const createProduct = async (req, res) => {
   try {
     let images = [];
     if (req.files && req.files.length > 0) {
-      images = req.files.map((file) => `/uploads/${file.filename}`);
+      const uploads = req.files.map((file) => uploadToCloudinary(file.buffer));
+      images = await Promise.all(uploads);
     } else if (req.body.images) {
       try { images = JSON.parse(req.body.images); } catch { images = []; }
     }
@@ -76,11 +76,8 @@ const updateProduct = async (req, res) => {
 
     let images = product.images;
     if (req.files && req.files.length > 0) {
-      images.forEach((img) => {
-        const filePath = path.join(__dirname, '..', img);
-        if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-      });
-      images = req.files.map((file) => `/uploads/${file.filename}`);
+      const uploads = req.files.map((file) => uploadToCloudinary(file.buffer));
+      images = await Promise.all(uploads);
     } else if (req.body.images) {
       try { images = JSON.parse(req.body.images); } catch { images = []; }
     }
@@ -109,12 +106,6 @@ const deleteProduct = async (req, res) => {
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
-
-    product.images.forEach((img) => {
-      const filePath = path.join(__dirname, '..', img);
-      if (fs.existsSync(filePath)) fs.unlinkSync(filePath);
-    });
-
     await product.deleteOne();
     res.json({ message: 'Product removed' });
   } catch (error) {
