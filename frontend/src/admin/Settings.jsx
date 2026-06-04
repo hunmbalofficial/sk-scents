@@ -51,8 +51,7 @@ const AdminSettings = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  const handleSave = async (e) => {
-    e.preventDefault();
+  const handleSave = async () => {
     setSaving(true);
     try {
       await settingService.update(form);
@@ -85,7 +84,7 @@ const AdminSettings = () => {
         {tabs.map((t) => <TabButton key={t.id} tab={t} />)}
       </div>
 
-      <form onSubmit={handleSave} className="space-y-6">
+      <div className="space-y-6">
         {activeTab === 'general' && (
           <div className="luxury-card rounded-xl p-6 space-y-4">
             <h2 className="font-display text-lg text-white mb-4">General Settings</h2>
@@ -238,11 +237,11 @@ const AdminSettings = () => {
         )}
 
         <div className="flex justify-end">
-          <button type="submit" disabled={saving} className="btn-primary flex items-center gap-2 px-6 py-2.5 rounded-lg text-xs tracking-wider uppercase">
+          <button type="button" onClick={handleSave} disabled={saving} className="btn-primary flex items-center gap-2 px-6 py-2.5 rounded-lg text-xs tracking-wider uppercase">
             <Save className="w-4 h-4" /> {saving ? 'Saving...' : 'Save Settings'}
           </button>
         </div>
-      </form>
+      </div>
     </div>
   );
 };
