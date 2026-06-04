@@ -57,11 +57,8 @@ const Navbar = () => {
       <nav ref={navRef} className="fixed top-0 left-0 right-0 z-50 bg-transparent">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="bg-white/[0.08] backdrop-blur-2xl border border-white/[0.12] shadow-lg shadow-black/10 rounded-xl px-4 py-2 flex items-center justify-between">
-            <Link to="/" className="group">
-              <div className="flex items-center gap-2">
-                <span className="font-display text-xl text-luxury-gold group-hover:text-luxury-gold-light transition-colors">SK</span>
-                <span className="font-display text-sm text-white/70 hidden sm:block">SCENTS</span>
-              </div>
+            <Link to="/" className="group flex items-center justify-center shrink-0 self-center" style={{ lineHeight: 0 }}>
+              <img src="/logo.png" alt="SK SCENTS" className="h-9 sm:h-10 w-auto object-contain group-hover:opacity-90 transition-opacity align-middle" />
             </Link>
 
             <div className="hidden lg:flex items-center gap-1">
