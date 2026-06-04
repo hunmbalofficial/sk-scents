@@ -7,6 +7,7 @@ const testimonialSchema = new mongoose.Schema({
   rating: { type: Number, required: true, min: 1, max: 5 },
   image: { type: String, default: '' },
   active: { type: Boolean, default: true },
+  order: { type: Number, default: 0 },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Testimonial', testimonialSchema);

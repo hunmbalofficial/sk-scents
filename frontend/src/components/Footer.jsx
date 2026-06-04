@@ -61,11 +61,11 @@ const Footer = () => {
             <h4 className="font-display text-lg text-white mb-4">Support</h4>
             <div className="flex flex-col gap-2">
               {[
-                { href: '#', label: 'Shipping Info' },
-                { href: '#', label: 'Returns' },
-                { href: '#', label: 'FAQ' },
+                { href: '#', label: 'Shipping Info', key: 'shipping' },
+                { href: '#', label: 'Returns', key: 'returns' },
+                { href: '#', label: 'FAQ', key: 'faq' },
               ].map((link) => (
-                <Link key={link.href} to={link.href} className="text-sm text-luxury-gray hover:text-luxury-gold transition-colors">
+                <Link key={link.key} to={link.href} className="text-sm text-luxury-gray hover:text-luxury-gold transition-colors">
                   {link.label}
                 </Link>
               ))}

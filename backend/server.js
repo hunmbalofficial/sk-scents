@@ -15,6 +15,7 @@ const testimonialRoutes = require('./routes/testimonials');
 const settingRoutes = require('./routes/settings');
 const faqRoutes = require('./routes/faqs');
 const complaintRoutes = require('./routes/complaints');
+const uploadRoutes = require('./routes/upload');
 const maintenanceMode = require('./middleware/maintenance');
 
 const app = express();
@@ -31,6 +32,7 @@ app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/faqs', faqRoutes);
 app.use('/api/complaints', complaintRoutes);
+app.use('/api/upload', uploadRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'SK SCENTS API running' });

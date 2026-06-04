@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://sk-scents-v9yi.vercel.app/api';
+const API_URL = import.meta.env.VITE_API_URL || '/api';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -51,6 +51,18 @@ export const testimonialService = {
   create: (data) => api.post('/testimonials', data),
   update: (id, data) => api.put(`/testimonials/${id}`, data),
   delete: (id) => api.delete(`/testimonials/${id}`),
+  bulkDelete: (ids) => api.post('/testimonials/bulk-delete', { ids }),
+  bulkUpdate: (ids, active) => api.post('/testimonials/bulk-update', { ids, active }),
+  reorder: (items) => api.post('/testimonials/reorder', { items }),
+};
+
+export const uploadService = {
+  image: (file, folder) => {
+    const fd = new FormData();
+    fd.append('file', file);
+    if (folder) fd.append('folder', folder);
+    return api.post('/upload/image', fd, { headers: { 'Content-Type': 'multipart/form-data' } });
+  },
 };
 
 export const settingService = {

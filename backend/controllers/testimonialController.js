@@ -65,4 +65,49 @@ const deleteTestimonial = async (req, res) => {
   }
 };
 
-module.exports = { getTestimonials, getTestimonialById, createTestimonial, updateTestimonial, deleteTestimonial, seedTestimonials };
+const bulkDeleteTestimonials = async (req, res) => {
+  try {
+    const { ids } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ message: 'ids array is required' });
+    }
+    const result = await Testimonial.deleteMany({ _id: { $in: ids } });
+    res.json({ message: `${result.deletedCount} testimonial(s) removed` });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+const bulkUpdateTestimonials = async (req, res) => {
+  try {
+    const { ids, active } = req.body;
+    if (!Array.isArray(ids) || ids.length === 0) {
+      return res.status(400).json({ message: 'ids array is required' });
+    }
+    const result = await Testimonial.updateMany(
+      { _id: { $in: ids } },
+      { $set: { active } }
+    );
+    res.json({ message: `${result.modifiedCount} testimonial(s) updated` });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+const reorderTestimonials = async (req, res) => {
+  try {
+    const { items } = req.body;
+    if (!Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ message: 'items array is required' });
+    }
+    const updates = items.map(({ id, order }) =>
+      Testimonial.findByIdAndUpdate(id, { $set: { order } })
+    );
+    await Promise.all(updates);
+    res.json({ message: 'Order updated' });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+module.exports = { getTestimonials, getTestimonialById, createTestimonial, updateTestimonial, deleteTestimonial, bulkDeleteTestimonials, bulkUpdateTestimonials, reorderTestimonials, seedTestimonials };

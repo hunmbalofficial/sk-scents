@@ -4,10 +4,9 @@ import { Filter, X } from 'lucide-react';
 import gsap from 'gsap';
 import { productService } from '../services/api';
 import ProductCard from '../components/ProductCard';
-import Loader from '../components/Loader';
 
 const Shop = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
@@ -39,8 +38,7 @@ const Shop = () => {
     }
   }, []);
 
-  const categories = ['All', 'Oriental', 'Woody', 'Fresh', 'Floral', 'Collections', 'Testers'];
-  const genders = ['All', 'Men', 'Women', 'Unisex'];
+  const genders = ['Men', 'Women', 'Unisex'];
   const sortOptions = [
     { value: '', label: 'Latest' },
     { value: 'price_asc', label: 'Price: Low to High' },
@@ -66,26 +64,12 @@ const Shop = () => {
             <Filter className="w-4 h-4" /> Filters
           </button>
           <div className="hidden lg:flex items-center gap-4 flex-wrap">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => handleFilterChange('category', cat === 'All' ? '' : cat)}
-                className={`px-4 py-2 rounded-lg text-xs tracking-wider uppercase transition-all ${
-                  (cat === 'All' && !filters.category) || filters.category === cat
-                    ? 'bg-luxury-gold text-luxury-black'
-                    : 'bg-luxury-card text-luxury-gray hover:text-white border border-luxury-gold/10'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-            <div className="w-px h-6 bg-luxury-gold/20 mx-2" />
             {genders.map((g) => (
               <button
                 key={g}
-                onClick={() => handleFilterChange('gender', g === 'All' ? '' : g)}
+                onClick={() => handleFilterChange('gender', g)}
                 className={`px-4 py-2 rounded-lg text-xs tracking-wider uppercase transition-all ${
-                  (g === 'All' && !filters.gender) || filters.gender === g
+                  filters.gender === g
                     ? 'bg-luxury-gold text-luxury-black'
                     : 'bg-luxury-card text-luxury-gray hover:text-white border border-luxury-gold/10'
                 }`}
@@ -141,31 +125,14 @@ const Shop = () => {
           </div>
           <div className="space-y-6">
             <div>
-              <p className="text-sm text-luxury-gray mb-3 uppercase tracking-wider">Category</p>
-              <div className="flex flex-wrap gap-2">
-                {categories.map((cat) => (
-                  <button
-                    key={cat}
-                    onClick={() => handleFilterChange('category', cat === 'All' ? '' : cat)}
-                    className={`px-3 py-1.5 rounded text-xs transition-all ${
-                      (cat === 'All' && !filters.category) || filters.category === cat
-                        ? 'bg-luxury-gold text-luxury-black' : 'bg-luxury-black text-luxury-gray'
-                    }`}
-                  >
-                    {cat}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div>
               <p className="text-sm text-luxury-gray mb-3 uppercase tracking-wider">Gender</p>
               <div className="flex flex-wrap gap-2">
                 {genders.map((g) => (
                   <button
                     key={g}
-                    onClick={() => handleFilterChange('gender', g === 'All' ? '' : g)}
+                    onClick={() => handleFilterChange('gender', g)}
                     className={`px-3 py-1.5 rounded text-xs transition-all ${
-                      (g === 'All' && !filters.gender) || filters.gender === g
+                      filters.gender === g
                         ? 'bg-luxury-gold text-luxury-black' : 'bg-luxury-black text-luxury-gray'
                     }`}
                   >
