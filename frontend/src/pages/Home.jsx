@@ -3,7 +3,7 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Hero from '../sections/Hero';
 import FeaturedCollection from '../sections/FeaturedCollection';
-import BestSellers from '../sections/BestSellers';
+import TestersSection from '../sections/TestersSection';
 
 import Testimonials from '../sections/Testimonials';
 import Newsletter from '../sections/Newsletter';
@@ -20,7 +20,7 @@ const Home = () => {
     <div>
       <Hero />
       <FeaturedCollection />
-      <BestSellers />
+      <TestersSection />
       <Testimonials />
       <Newsletter />
     </div>
