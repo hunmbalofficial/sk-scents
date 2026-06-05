@@ -19,7 +19,7 @@ const Shop = () => {
   const headingRef = useRef(null);
 
   useEffect(() => {
-    const params = {};
+    const params = { excludeCategory: 'Testers' };
     if (filters.category) params.category = filters.category;
     if (filters.gender) params.gender = filters.gender;
     if (filters.sort) params.sort = filters.sort;
