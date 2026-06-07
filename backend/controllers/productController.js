@@ -3,14 +3,13 @@ const { uploadToCloudinary } = require('../config/cloudinary');
 
 const getProducts = async (req, res) => {
   try {
-    const { category, gender, search, sort, featured, bestSeller, excludeCategory } = req.query;
+    const { category, gender, search, sort, featured, bestSeller } = req.query;
     let query = {};
 
     if (category) query.category = category;
     if (gender) query.gender = gender;
     if (featured === 'true') query.featured = true;
     if (bestSeller === 'true') query.bestSeller = true;
-    if (excludeCategory) query.category = { $ne: excludeCategory };
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
