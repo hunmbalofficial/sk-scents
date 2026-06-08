@@ -63,6 +63,10 @@ const orderSchema = new mongoose.Schema({
     transactionId: String,
     provider: String,
   },
+  paymentScreenshot: {
+    type: String,
+    default: '',
+  },
   subtotal: {
     type: Number,
     required: true,

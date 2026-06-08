@@ -3,7 +3,7 @@ const Product = require('../models/Product');
 
 const createOrder = async (req, res) => {
   try {
-    const { items, guestInfo, paymentMethod, cardInfo, mobilePaymentInfo } = req.body;
+    const { items, guestInfo, paymentMethod, cardInfo, mobilePaymentInfo, paymentScreenshot } = req.body;
 
     if (!items || items.length === 0) {
       return res.status(400).json({ message: 'No order items' });
@@ -42,6 +42,7 @@ const createOrder = async (req, res) => {
       paymentStatus,
       cardInfo: paymentMethod === 'card' ? cardInfo : undefined,
       mobilePaymentInfo: ['easypaisa', 'jazzcash'].includes(paymentMethod) ? mobilePaymentInfo : undefined,
+      paymentScreenshot: ['easypaisa', 'jazzcash'].includes(paymentMethod) ? (paymentScreenshot || '') : undefined,
       subtotal,
       total: subtotal,
     });

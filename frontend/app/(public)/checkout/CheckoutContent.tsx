@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Loader2, CreditCard, Banknote, Check, Smartphone } from 'lucide-react';
+import { ArrowLeft, Loader2, CreditCard, Banknote, Check, Smartphone, Upload, X } from 'lucide-react';
 import gsap from 'gsap';
 import { useCartStore, useCartSubtotal } from '@/lib/store/useCartStore';
 import { orderService } from '@/lib/api';
@@ -29,6 +29,7 @@ export default function CheckoutContent() {
   const [form, setForm] = useState({ fullName: '', phoneNumber: '', city: '', address: '', notes: '' });
   const [card, setCard] = useState({ number: '', expiry: '', cvc: '', name: '' });
   const [mobilePayment, setMobilePayment] = useState({ accountNumber: '', transactionId: '' });
+  const [paymentScreenshot, setPaymentScreenshot] = useState<string>('');
 
   useEffect(() => {
     if (formRef.current) gsap.fromTo(formRef.current, { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' });
@@ -87,6 +88,28 @@ export default function CheckoutContent() {
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!['image/png', 'image/jpeg', 'image/jpg'].includes(file.type)) {
+      setErrors((prev) => ({ ...prev, paymentScreenshot: 'Only PNG and JPG files allowed' }));
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setErrors((prev) => ({ ...prev, paymentScreenshot: 'File size must be under 5MB' }));
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setPaymentScreenshot(reader.result as string);
+      setErrors((prev) => ({ ...prev, paymentScreenshot: '' }));
+    };
+    reader.onerror = () => {
+      setErrors((prev) => ({ ...prev, paymentScreenshot: 'Failed to read file' }));
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
@@ -101,6 +124,7 @@ export default function CheckoutContent() {
           brand: card.number.startsWith('4') ? 'Visa' : card.number.startsWith('5') ? 'Mastercard' : 'Card',
         } : undefined,
         mobilePaymentInfo: ['easypaisa', 'jazzcash'].includes(paymentMethod) ? { ...mobilePayment, provider: paymentMethod === 'easypaisa' ? 'Easypaisa' : 'JazzCash' } : undefined,
+        paymentScreenshot: ['easypaisa', 'jazzcash'].includes(paymentMethod) ? paymentScreenshot : undefined,
       };
       const res = await orderService.create(orderData);
       clearCart();
@@ -184,6 +208,23 @@ export default function CheckoutContent() {
                   <div className="bg-luxury-black/50 rounded-lg p-4 mb-4"><p className="text-sm text-luxury-gray">Send payment to <span className="text-luxury-gold font-medium">{paymentMethod === 'easypaisa' ? 'Easypaisa' : 'JazzCash'}</span> account:</p><p className="text-lg font-mono text-white mt-1">03XX-XXXXXXX</p><p className="text-xs text-luxury-gray mt-1">Then enter your details below</p></div>
                   <div><label className="block text-sm text-luxury-gray mb-1.5">Your {paymentMethod === 'easypaisa' ? 'Easypaisa' : 'JazzCash'} Account Number *</label><input name="accountNumber" value={mobilePayment.accountNumber} onChange={handleMobileChange} className="input-luxury w-full rounded-lg px-4 py-3 text-sm" placeholder="03XXXXXXXXX" />{errors.accountNumber && <p className="text-red-400 text-xs mt-1">{errors.accountNumber}</p>}</div>
                   <div><label className="block text-sm text-luxury-gray mb-1.5">Transaction ID *</label><input name="transactionId" value={mobilePayment.transactionId} onChange={handleMobileChange} className="input-luxury w-full rounded-lg px-4 py-3 text-sm" placeholder="Enter transaction/reference ID" />{errors.transactionId && <p className="text-red-400 text-xs mt-1">{errors.transactionId}</p>}</div>
+                  <div>
+                    <label className="block text-sm text-luxury-gray mb-1.5">Payment Screenshot <span className="text-luxury-gray-dark">(optional)</span></label>
+                    <div className="flex items-center gap-3">
+                      <label className="flex items-center gap-2 cursor-pointer bg-white/[0.04] hover:bg-white/[0.08] border border-dashed border-white/10 rounded-xl px-4 py-3 text-sm text-luxury-gray transition-all">
+                        <Upload className="w-4 h-4" />
+                        <span>Upload PNG</span>
+                        <input type="file" accept="image/png,image/jpeg,image/jpg" onChange={handleFileChange} className="hidden" />
+                      </label>
+                      {paymentScreenshot && (
+                        <div className="relative">
+                          <img src={paymentScreenshot} alt="Payment screenshot preview" className="w-14 h-14 rounded-lg object-cover border border-luxury-gold/20" />
+                          <button type="button" onClick={() => setPaymentScreenshot('')} className="absolute -top-1.5 -right-1.5 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center text-white"><X className="w-3 h-3" /></button>
+                        </div>
+                      )}
+                    </div>
+                    {errors.paymentScreenshot && <p className="text-red-400 text-xs mt-1">{errors.paymentScreenshot}</p>}
+                  </div>
                 </div>
               )}
               <div className="mt-6">
