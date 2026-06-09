@@ -41,8 +41,8 @@ api.interceptors.response.use(
 export const productService = {
   getAll: (params?: Record<string, string>) => api.get('/products', { params }),
   getById: (id: string) => api.get(`/products/${id}`),
-  create: (data: FormData) => api.post('/products', data, { headers: { 'Content-Type': 'multipart/form-data' } }),
-  update: (id: string, data: FormData) => api.put(`/products/${id}`, data, { headers: { 'Content-Type': 'multipart/form-data' } }),
+  create: (data: FormData) => api.post('/products', data),
+  update: (id: string, data: FormData) => api.put(`/products/${id}`, data),
   delete: (id: string) => api.delete(`/products/${id}`),
 };
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { orderService } from '@/lib/api';
 import { formatPrice } from '@/lib/utils';
 import { useToast } from '@/components/ui/Toaster';
-import { CreditCard, Banknote, Smartphone } from 'lucide-react';
+import { CreditCard, Banknote, Smartphone, ImageIcon, X } from 'lucide-react';
 
 const statusColors: Record<string, string> = {
   Pending: 'text-amber-400 bg-amber-400/10 border-amber-400/20',
@@ -21,6 +21,7 @@ export default function AdminOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('');
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [previewImg, setPreviewImg] = useState<string | null>(null);
   const { addToast } = useToast();
 
   useEffect(() => { loadOrders(); }, [statusFilter]);
@@ -83,6 +84,11 @@ export default function AdminOrdersPage() {
                     <div className="flex items-center gap-2">
                       {order.paymentMethod === 'card' ? <CreditCard className="w-3.5 h-3.5 text-luxury-gold" /> : order.paymentMethod === 'easypaisa' || order.paymentMethod === 'jazzcash' ? <Smartphone className="w-3.5 h-3.5 text-luxury-gold" /> : <Banknote className="w-3.5 h-3.5 text-luxury-gold" />}
                       <span className="text-sm text-luxury-gray">{paymentLabels[order.paymentMethod] || order.paymentMethod}</span>
+                      {order.paymentScreenshot && (
+                        <button onClick={(e) => { e.stopPropagation(); setPreviewImg(order.paymentScreenshot); }} className="ml-1 text-luxury-gold hover:text-luxury-gold-light transition-colors" title="View payment screenshot">
+                          <ImageIcon className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
                     <span className={`text-[10px] mt-1 inline-block px-1.5 py-0.5 rounded ${order.paymentStatus === 'Paid' ? 'text-green-400 bg-green-400/10' : 'text-amber-400 bg-amber-400/10'}`}>{order.paymentStatus}</span>
                   </td>
@@ -121,7 +127,37 @@ export default function AdminOrdersPage() {
                 ))}
               </div>
               <div className="border-t border-luxury-gold/10 pt-3 flex justify-between"><span className="text-white font-medium">Total</span><span className="text-luxury-gold font-display">{formatPrice(selectedOrder.total)}</span></div>
+              {selectedOrder.paymentMethod === 'easypaisa' || selectedOrder.paymentMethod === 'jazzcash' ? (
+                <div className="border-t border-luxury-gold/10 pt-3 mt-3">
+                  <span className="text-xs text-luxury-gray block mb-2">Payment Details</span>
+                  {selectedOrder.accountNumber && <div className="flex justify-between text-sm"><span className="text-luxury-gray">Account</span><span className="text-white">{selectedOrder.accountNumber}</span></div>}
+                  {selectedOrder.transactionId && <div className="flex justify-between text-sm"><span className="text-luxury-gray">Transaction ID</span><span className="text-white font-mono text-xs">{selectedOrder.transactionId}</span></div>}
+                  {selectedOrder.paymentScreenshot && (
+                    <div className="mt-3">
+                      <span className="text-xs text-luxury-gray block mb-2">Payment Screenshot</span>
+                      <img
+                        src={selectedOrder.paymentScreenshot}
+                        alt="Payment Screenshot"
+                        className="w-full rounded-lg border border-luxury-gold/10 cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={() => setPreviewImg(selectedOrder.paymentScreenshot)}
+                      />
+                    </div>
+                  )}
+                </div>
+              ) : null}
             </div>
+          </div>
+        </div>
+      )}
+
+      {previewImg && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center p-4" onClick={() => setPreviewImg(null)}>
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+          <button onClick={() => setPreviewImg(null)} className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-luxury-card border border-luxury-gold/20 flex items-center justify-center text-white hover:text-luxury-gold transition-colors">
+            <X className="w-5 h-5" />
+          </button>
+          <div className="relative max-w-2xl max-h-[85vh]" onClick={(e) => e.stopPropagation()}>
+            <img src={previewImg} alt="Payment Screenshot" className="w-full h-full object-contain rounded-2xl border border-luxury-gold/10" />
           </div>
         </div>
       )}
